@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    {% block title %}<title>Section Grades Report</title>{% endblock %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/view.css" %}" media="all">
+    <script type="text/javascript" src="{% static "js/view.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/calendar.js" %}"></script>
+</head>
+{% block content %}
+    <body id="main_body">
+
+    <img id="top" src="{% static "images/top.png" %}" alt="">
+    <div id="form_container">
+
+        <h1><a>King Khalid University</a></h1>
+        <form id="form_40901" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'do_section' %}">{% csrf_token %}
+            <div class="form_description">
+                <h2>King Khalid University</h2>
+                <p>College of Science and Arts in Tanumah</p>
+                <p> Measurement and Evaluation Unit
+                </p>
+                <p> <h3>Section Grades Report</h3>
+                </p>
+            </div>
+            <ul>
+
+                <li class="section_break">
+                    <h3>Grades</h3>
+                    <p></p>
+                </li>
+                <li id="li_7">
+                    <label class="description" for="grades">Grade File </label>
+                    <div>
+                        <input id="element_7" name="grades" class="element file" type="file"/>
+                    </div>
+                    <p class="guidelines" id="guide_7">
+                        <small>Get the grade file from academia and upload it here</small>
+                    </p>
+                </li>
+
+                <li class="buttons">
+                    <input type="hidden" name="form_id" value="40901"/>
+
+                    <input id="saveForm" class="mybutton" type="submit" name="submit" value="Compute Statistics"/>
+                </li>
+            </ul>
+        </form>
+        <form id="form_40902" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'index' %}">{% csrf_token %}
+                <li class="buttons">
+                    <input type="hidden" name="form_id" value="40901"/>
+
+                    <input id="saveForm" class="mybutton2" type="submit" name="submit" value="Back to Main Menu"/>
+                </li>
+            </ul>
+        </form>
+        <div id="footer">
+            <p>1439/1440 - Measurement and Evaluation Unit </p>
+            <p>For any problem, please contact mzarka@kku.edu.sa</p>
+        </div>
+    </div>
+    <img id="bottom" src="{% static "images/bottom.png" %}" alt="">
+    </body>
+
+{% endblock %}
+</html>

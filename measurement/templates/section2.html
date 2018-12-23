@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    {% block title %}<title>Faculty Grades Report</title>{% endblock %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/view.css" %}" media="all">
+    <script type="text/javascript" src="{% static "js/view.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/calendar.js" %}"></script>
+</head>
+{% block content %}
+    <body id="main_body">
+
+    <img id="top" src="{% static "images/top.png" %}" alt="">
+    <div id="form_container">
+
+        <h1><a>King Khalid University</a></h1>
+        <form id="form_40901" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'do_section' %}">{% csrf_token %}
+            <div class="form_description">
+                <h2>King Khalid University</h2>
+                <p>College of Science and Arts in Tanumah</p>
+                <p> Measurement and Evaluation Unit
+                </p>
+            </div>
+            <ul>
+
+                <li class="section_break">
+                    <h3>Teacher Information</h3>
+                    <p></p>
+                </li>
+                <li id="li_1">
+                    <label class="description" for="element_1">Full Name </label>
+                    <div>
+                        <input id="element_1" name="teacher" class="element text large" type="text" maxlength="255"
+                               value=""/>
+                    </div>
+                    <p class="guidelines" id="guide_1">
+                        <small>Faculty Full Name</small>
+                    </p>
+                </li>
+                <li id="li_2">
+                    <label class="description" for="element_2">Email </label>
+                    <div>
+                        <input id="element_2" name="email" class="element text medium" type="text" maxlength="255"
+                               value=""/>
+                    </div>
+                    <p class="guidelines" id="guide_2">
+                        <small>Faculty Email</small>
+                    </p>
+                </li>
+                <li class="section_break">
+                    <h3>Course Information</h3>
+                    <p></p>
+                </li>
+                <li id="li_8">
+                    <label class="description" for="element_8">College </label>
+                    <div>
+                        <select class="element select medium" id="element_8" name="college">
+                            <option value="" selected="selected"></option>
+                            <option value="College of Science and Arts in Tanumah">College of Science and Arts in Tanumah</option>
+                            <option value="Other">Other</option>
+
+                        </select>
+                    </div>
+                    <p class="guidelines" id="guide_8">
+                        <small>College Name</small>
+                    </p>
+                </li>
+                <li id="li_9">
+                    <label class="description" for="element_9">Department </label>
+                    <div>
+                        <select class="element select medium" id="element_9" name="department">
+                            <option value="" selected="selected"></option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="English Language">English Language</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Finance">Finance</option>
+
+                        </select>
+                    </div>
+                    <p class="guidelines" id="guide_9">
+                        <small>Select your department</small>
+                    </p>
+                </li>
+                <li id="li_6">
+                    <label class="description" for="element_6">Course Name </label>
+                    <div>
+                        <input id="element_6" name="course" class="element text large" type="text" maxlength="255"
+                               value=""/>
+                    </div>
+                    <p class="guidelines" id="guide_6">
+                        <small>The course name</small>
+                    </p>
+                </li>
+                <li class="section_break">
+                    <h3>Grades</h3>
+                    <p></p>
+                </li>
+                <li id="li_7">
+                    <label class="description" for="grades">Grade File </label>
+                    <div>
+                        <input id="element_7" name="grades" class="element file" type="file"/>
+                    </div>
+                    <p class="guidelines" id="guide_7">
+                        <small>Get the grade file from academia and upload it here</small>
+                    </p>
+                </li>
+
+                <li class="buttons">
+                    <input type="hidden" name="form_id" value="40901"/>
+
+                    <input id="saveForm" class="mybutton" type="submit" name="submit" value="Compute Statistics"/>
+                </li>
+            </ul>
+        </form>
+        <form id="form_40902" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'index' %}">{% csrf_token %}
+                <li class="buttons">
+                    <input type="hidden" name="form_id" value="40901"/>
+
+                    <input id="saveForm" class="mybutton2" type="submit" name="submit" value="Back to Main Menu"/>
+                </li>
+            </ul>
+        </form>
+        <div id="footer">
+            <p>1439/1440 - Measurement and Evaluation Unit </p>
+            <p>For any problem, please contact mzarka@kku.edu.sa</p>
+        </div>
+    </div>
+    <img id="bottom" src="{% static "images/bottom.png" %}" alt="">
+    </body>
+
+{% endblock %}
+</html>

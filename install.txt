@@ -1,0 +1,18 @@
+sudo apt update
+sudo apt upgrade
+sudo apt install python3-pip
+sudo pip3 install django==2.1.4
+sudo pip3 install djangorestframework
+sudo pip3 install psycopg2
+sudo pip3 install psycopg2-binary
+sudo pip3 install pandas
+sudo pip3 install xlrd
+sudo pip3 install openpyxl
+sudo pip3 install xlutils
+sudo pip3 install scipy
+sudo pip3 install matplotlib
+sudo apt-get install python3-tk
+sudo pip3 install docx
+sudo pip3 install seaborn
+sudo pip3 install googletrans
+sudo pip3 install google.cloud.translate
