@@ -34,10 +34,53 @@ def index(request):
 
 
 def section(request):
-
     context = {
     }
     return render(request, 'section.html', context=context)
+
+
+def analysis(context):
+    __analysis = []
+    _mean = context['mean']
+    if _mean > 90:
+        __analysis.append('The Grades Mean is High')
+    if _mean < 60:
+        __analysis.append('The Grades Mean is Low')
+    if 60 <= _mean <= 90:
+        __analysis.append('The Grades Mean is Normal')
+
+    _std = context['std']
+    if _std < 5:
+        __analysis.append('The spread of grades is Low --> the grades are very close')
+    if _std > 15:
+        __analysis.append('The spread of grades is  High --> the grades are very far')
+    if 15 > _std > 5:
+        __analysis.append('The spread of grades is  correct')
+
+    _skewness = context['skewness']
+    if _skewness >= 0:
+        __analysis.append('The skewness of positive --> Most of grades are less than the mean.')
+    else:
+        __analysis.append('The skewness of negative --> Most of grades are more than the mean.')
+
+    _correlation = context['correlation']
+    if _correlation >= 0.05:
+        __analysis.append(
+            'The correlation is greater or equal to 0.05 --> There is no correlation between Mids and Finals.')
+    else:
+        __analysis.append('The correlation is less than 0.05 --> There is a good correlation between Mids and Finals.')
+
+    try :
+        _ttest_annova_sig = context['ttest_annova_sig']
+        if _ttest_annova_sig >= 0.05:
+            __analysis.append(
+                'The section results are very close.')
+        else:
+            __analysis.append('There are difference in section results.')
+    except :
+        pass
+
+    return __analysis
 
 
 def course(request):
@@ -72,10 +115,10 @@ def department(request):
 
 
 def section_action(request):
+    __analysis = []
     context = {}
     __grades = ''
     __domain = request.get_host()
-
 
     __location = ''
     __teachers = ''
@@ -99,7 +142,6 @@ def section_action(request):
     __totals = []
     __line = 7
 
-
     try:
         sem.acquire()
         print("The semaphore is locked")
@@ -111,7 +153,7 @@ def section_action(request):
         if request.method == 'POST':
 
             # upload the file
-            _grades_uploaded_file = 'data/upload/' +str(__grades)
+            _grades_uploaded_file = 'data/upload/' + str(__grades)
             if not os.path.exists('data/upload/'):
                 os.mkdirs('data/upload/')
 
@@ -138,10 +180,9 @@ def section_action(request):
             __newfilename = 'data/upload/section_' + str(__section) + _grades_uploaded_file[-4:]
             os.rename(_grades_uploaded_file, __newfilename)
 
-
             __section_obj = None
             for _mytest in Section.objects.all():
-                if _mytest.section_course.course_department.department_location.college_location.location_name_ar == __location\
+                if _mytest.section_course.course_department.department_location.college_location.location_name_ar == __location \
                         and _mytest.section_code == __section:
                     __section_obj = _mytest
                     print('Section found with id = ' + str(_mytest.section_id))
@@ -181,18 +222,18 @@ def section_action(request):
 
             # debug data
 
-            #print('grades = ' + str(__grades))
-            #print('Section = ' + str(__section))
-            #print('MIDs = ' + str(__mids))
-            #print('Finals = ' + str(__finals))
-            #print('Totals = ' + str(__totals))
+            # print('grades = ' + str(__grades))
+            # print('Section = ' + str(__section))
+            # print('MIDs = ' + str(__mids))
+            # print('Finals = ' + str(__finals))
+            # print('Totals = ' + str(__totals))
 
             # compute statistics about the course grades
 
             if __section_obj == None:
                 raise Exception('Unable to recognise the section in the database !!!')
 
-            if __section != ''  and __section_obj != None:
+            if __section != '' and __section_obj != None:
                 __message = 'The grade Excel file was well loaded'
                 __mean = float("{0:.4f}".format(statistics.mean(__totals)))
                 __std = float("{0:.4f}".format(statistics.stdev(__totals)))
@@ -246,7 +287,6 @@ def section_action(request):
                     obj = SectionDocRequest()
                     print("--------> Creating new section data")
 
-
                 obj.doc_correlation = __correlation
                 obj.doc_explanation = ''
                 obj.doc_max = __max
@@ -282,6 +322,7 @@ def section_action(request):
     if len(__mids) == 0:
         __correlation = 'N/A'
 
+
     context = {
         'show_result': __show__result,
         'message': __message,
@@ -294,13 +335,16 @@ def section_action(request):
         'histogram': __histogramfile,
         'domain': __domain,
         'section': __section,
-        'location' : __location,
-        'college' : __college,
-        'department' : __department,
-        'course' : __course,
-        'course_code' : __course_code,
-        'teachers' : __teachers,
+        'location': __location,
+        'college': __college,
+        'department': __department,
+        'course': __course,
+        'course_code': __course_code,
+        'teachers': __teachers,
     }
+    __results = analysis(context)
+    context['analysis'] = __results
+
 
 
     del __grades
@@ -318,12 +362,13 @@ def section_action(request):
 
     return render(request, 'section_result.html', context=context)
 
-def section_docx(request):
 
+def section_docx(request):
     __section_obj = None
     __section_report_obj = None
     __section_id = 0
     context = {}
+
     return render(request, 'section.html', context=context)
 
 
@@ -365,7 +410,7 @@ def course_action(request):
 
         if request.method == 'POST':
             __course_obj = Course.objects.get(course_id=__course_id)
-            print('Dealing with course ' +__course_obj.course_name_ar )
+            print('Dealing with course ' + __course_obj.course_name_ar)
             __course = __course_obj.course_name_ar
 
             for _section in Section.objects.all():
@@ -404,51 +449,51 @@ def course_action(request):
             __max = max(__totals)
 
             if __nbr_sections == 2:
-                #T-Test
+                # T-Test
                 __ttest_annova_type = 'T-Test'
-                _total1= eval(__sections[0].student_grades)['totals']
-                _total2= eval(__sections[1].student_grades)['totals']
+                _total1 = eval(__sections[0].student_grades)['totals']
+                _total2 = eval(__sections[1].student_grades)['totals']
                 res = scipy.stats.ttest_ind(_total1, _total2)
 
                 __ttest_annova_value = float("{0:.4f}".format(res.statistic))
                 __ttest_annova_sig = float("{0:.4f}".format(res.pvalue))
 
             else:
-                #annova
+                # annova
                 __ttest_annova_type = 'ANOVA'
                 if len(__sections) == 3:
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'])[0]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'])[1]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'])[1]))
                 elif len(__sections) == 4:
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'])[0]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'],
+                                             eval(__sections[3].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'])[1]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'],
+                                             eval(__sections[3].student_grades)['totals'])[1]))
                 elif len(__sections) == 5:
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'],
-                                            eval(__sections[4].student_grades)['totals'])[0]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'],
+                                             eval(__sections[3].student_grades)['totals'],
+                                             eval(__sections[4].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
-                                            eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'],
-                                            eval(__sections[4].student_grades)['totals'])[1]))
+                                             eval(__sections[1].student_grades)['totals'],
+                                             eval(__sections[2].student_grades)['totals'],
+                                             eval(__sections[3].student_grades)['totals'],
+                                             eval(__sections[4].student_grades)['totals'])[1]))
                 else:
                     raise Exception('To be implemented : managing more that 5 sections per a course !!!!')
 
@@ -458,7 +503,6 @@ def course_action(request):
             print("__ttest_annova_type : " + str(__ttest_annova_type))
             print("__ttest_annova_value : " + str(__ttest_annova_value))
             print("__ttest_annova_sig : " + str(__ttest_annova_sig))
-
 
             # plot the histogram
 
@@ -475,7 +519,7 @@ def course_action(request):
             x = np.linspace(0, 100, 100)
             p = norm.pdf(x, mu, std)
             plt.plot(x, p, 'k', linewidth=3)
-            title = "Histogram for course: " + __course_obj.course_name +",  N=%d" % (number)
+            title = "Histogram for course: " + __course_obj.course_name + ",  N=%d" % (number)
             plt.title(title)
 
             __histogramfile = "data/media/histogram_course_" + str(__course) + ".png"
@@ -509,8 +553,6 @@ def course_action(request):
             obj.doc_ttest_annova_value = __ttest_annova_value
             obj.doc_ttest_annova_type = __ttest_annova_type
 
-
-
             obj.save()
 
             # get the server domain
@@ -533,9 +575,9 @@ def course_action(request):
         __correlation = 'N/A'
 
     context = {
-        'ttest_annova_sig' : __ttest_annova_sig,
-        'ttest_annova_type' : __ttest_annova_type,
-        'ttest_annova_value' : __ttest_annova_value,
+        'ttest_annova_sig': __ttest_annova_sig,
+        'ttest_annova_type': __ttest_annova_type,
+        'ttest_annova_value': __ttest_annova_value,
         'show_result': __show__result,
         'message': __message,
         'mean': __mean,
@@ -547,8 +589,11 @@ def course_action(request):
         'histogram': __histogramfile,
         'domain': __domain,
         'course': __course,
-        'sections' : __sections,
+        'sections': __sections,
     }
+
+    __results = analysis(context)
+    context['analysis'] = __results
 
     del __course
     del __message

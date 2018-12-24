@@ -91,6 +91,17 @@
 
                 {% endif %}
 
+                 <li class="section_break">
+                    <h3>Brief Analysis:</h3>
+                    <p></p>
+                </li>
+
+                {% for description in analysis %}
+                <li id="li_6">
+                    <label class="description" for="element_6"> - {{ description }} </label>
+                </li>
+                {% endfor %}
+
             </ul>
 
         </form>
