@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import SectionDocRequest
+from .models import CourseDocRequest
 
 from .models import Location
 from .models import College
@@ -10,6 +11,7 @@ from .models import Section
 from .models import Translation
 
 import xlrd as xl
+import csv
 from googletrans import Translator
 from django.http import HttpResponse
 from django.contrib import messages
@@ -427,6 +429,51 @@ generate_translation_list.short_description = "Genrate Translation Report"
 
 
 
+#################################################################################
+def export_as_csv(modeladmin, request, queryset):
+    field_names = ['ARABIC', 'ENGLISH']
+
+    with open('data/translations/translations.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names, delimiter=';')
+        writer.writeheader()
+        for obj in Translation.objects.all():
+            writer.writerow({'ARABIC': obj.translation_ar, 'ENGLISH': obj.translation_en})
+
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=translations.csv'
+    writer = csv.DictWriter(response, fieldnames=field_names, delimiter=';')
+    writer.writeheader()
+    for _obj in Translation.objects.all():
+        writer.writerow({'ARABIC': _obj.translation_ar, 'ENGLISH': _obj.translation_en})
+
+    return response
+export_as_csv.short_description = "Export Translations to CSV"
+
+
+#################################################################################
+def import_from_csv(modeladmin, request, queryset):
+    with open('data/translations/translations.csv') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')
+        for row in reader:
+            _ar = row['ARABIC']
+            _en = row['ENGLISH']
+
+            try:
+                obj = Translation.objects.get(translation_ar=_ar)
+                obj.translation_en = _en
+                obj.save()
+            except Translation.DoesNotExist:
+                obj = Translation()
+                obj.translation_ar = _ar
+                obj.translation_en = _en
+                obj.save()
+
+import_from_csv.short_description = "Import Translations from CSV"
+
+
+
+
 class LocationAdmin(admin.ModelAdmin):
     list_display = (
         'location_id', 'location_name_ar', 'location_name')
@@ -473,11 +520,16 @@ class SectionDocRequestAdmin(admin.ModelAdmin):
        'section', 'created_date')
     list_filter = ('created_date',)
 
+class CourseDocRequestAdmin(admin.ModelAdmin):
+    list_display = (
+       'course', 'created_date')
+    list_filter = ('created_date',)
+
 
 class TranslationAdmin(admin.ModelAdmin):
     list_display = (
         'translation_ar', 'translation_en')
-    actions = [generate_translation_list, apply_translation]
+    actions = [generate_translation_list, apply_translation, export_as_csv, import_from_csv]
 
 
 admin.site.register(Location, LocationAdmin)
@@ -490,3 +542,4 @@ admin.site.register(Section, SectionAdmin)
 admin.site.register(Translation, TranslationAdmin)
 
 admin.site.register(SectionDocRequest, SectionDocRequestAdmin)
+admin.site.register(CourseDocRequest, CourseDocRequestAdmin)
