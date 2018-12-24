@@ -74,7 +74,7 @@
                     <label class="description" for="element_6">Skewness ={{ skewness }} </label>
                 </li>
                 <li id="li_6">
-                    <label class="description" for="element_6">Correlation ={{ correlation }} </label>
+                    <label class="description" for="element_6">Correlation (Sig.) ={{ correlation }} </label>
                 </li>
                 <li id="li_6">
                      <label class="description" for="element_6">Minimum ={{ min }} </label>
@@ -98,13 +98,6 @@
 
         </form>
 
-        <form id="form_40902" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'section_docx' %}">{% csrf_token %}
-                <li class="buttons">
-                    <input type="hidden" name="section_id" value="{{section}}"/>
-
-                    <input id="saveForm" class="mybutton2" type="submit" name="submit" value="Generate Section Report (docx)"/>
-                </li>
-            </ul>
 
         <form id="form_40902" class="appnitro" enctype="multipart/form-data" method="post" action="{% url 'index' %}">{% csrf_token %}
                 <li class="buttons">

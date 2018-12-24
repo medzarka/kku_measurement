@@ -226,10 +226,10 @@ def section_action(request):
                 plt.savefig(__histogramfile)
                 plt.close()
 
-                #print("mean : " + str(__mean))
-                #print("std : " + str(__std))
-                #print("skewness : " + str(__skewness))
-                #print("correlation : " + str(__correlation))
+                print("mean : " + str(__mean))
+                print("std : " + str(__std))
+                print("skewness : " + str(__skewness))
+                print("correlation : " + str(__correlation))
 
                 __show__result = 1
                 # save the section analysis
@@ -274,9 +274,7 @@ def section_action(request):
     except ValueError as e:
         __message = 'Please use the grade file provided by the registration portal (Academia) without any change.'
         print(str(e))
-    except Exception as e:
-        __message = e.__str__()
-        print(str(e))
+
     finally:
         sem.release()
         print("The semaphore was released")
@@ -401,7 +399,7 @@ def course_action(request):
             if len(__mids) == 0:
                 __correlation = -99.99
             else:
-                __correlation = float("{0:.4f}".format(pearsonr(__mids, __finals)[0]))
+                __correlation = float("{0:.4f}".format(pearsonr(__mids, __finals)[1]))
             __min = min(__totals)
             __max = max(__totals)
 
@@ -412,8 +410,8 @@ def course_action(request):
                 _total2= eval(__sections[1].student_grades)['totals']
                 res = scipy.stats.ttest_ind(_total1, _total2)
 
-                __ttest_annova_value = float("{0:.4f}".format(res.pvalue))
-                __ttest_annova_sig = float("{0:.4f}".format(res.statistic))
+                __ttest_annova_value = float("{0:.4f}".format(res.statistic))
+                __ttest_annova_sig = float("{0:.4f}".format(res.pvalue))
 
             else:
                 #annova
@@ -422,44 +420,44 @@ def course_action(request):
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'])[1]))
+                                            eval(__sections[2].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
-                                            eval(__sections[2].student_grades)['totals'])[0]))
+                                            eval(__sections[2].student_grades)['totals'])[1]))
                 elif len(__sections) == 4:
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
                                             eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'])[1]))
+                                            eval(__sections[3].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
                                             eval(__sections[2].student_grades)['totals'],
-                                            eval(__sections[3].student_grades)['totals'])[0]))
+                                            eval(__sections[3].student_grades)['totals'])[1]))
                 elif len(__sections) == 5:
                     __ttest_annova_value = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
                                             eval(__sections[2].student_grades)['totals'],
                                             eval(__sections[3].student_grades)['totals'],
-                                            eval(__sections[4].student_grades)['totals'])[1]))
+                                            eval(__sections[4].student_grades)['totals'])[0]))
                     __ttest_annova_sig = float("{0:.4f}".format(
                         scipy.stats.f_oneway(eval(__sections[0].student_grades)['totals'],
                                             eval(__sections[1].student_grades)['totals'],
                                             eval(__sections[2].student_grades)['totals'],
                                             eval(__sections[3].student_grades)['totals'],
-                                            eval(__sections[4].student_grades)['totals'])[0]))
+                                            eval(__sections[4].student_grades)['totals'])[1]))
                 else:
                     raise Exception('To be implemented : managing more that 5 sections per a course !!!!')
 
-            #print("mean : " + str(__mean))
-            #print("std : " + str(__std))
-            #print("skewness : " + str(__skewness))
-            #print("__ttest_annova_type : " + str(__ttest_annova_type))
-            #print("__ttest_annova_value : " + str(__ttest_annova_value))
-            #print("__ttest_annova_sig : " + str(__ttest_annova_sig))
+            print("mean : " + str(__mean))
+            print("std : " + str(__std))
+            print("skewness : " + str(__skewness))
+            print("__ttest_annova_type : " + str(__ttest_annova_type))
+            print("__ttest_annova_value : " + str(__ttest_annova_value))
+            print("__ttest_annova_sig : " + str(__ttest_annova_sig))
 
 
             # plot the histogram
@@ -477,17 +475,17 @@ def course_action(request):
             x = np.linspace(0, 100, 100)
             p = norm.pdf(x, mu, std)
             plt.plot(x, p, 'k', linewidth=3)
-            title = "Histogram: mu = %.2f,  std = %.2f,  N=%d" % (mu, std, number)
+            title = "Histogram for course: " + __course_obj.course_name +",  N=%d" % (number)
             plt.title(title)
 
             __histogramfile = "data/media/histogram_course_" + str(__course) + ".png"
             plt.savefig(__histogramfile)
             plt.close()
 
-            #print("mean : " + str(__mean))
-            #print("std : " + str(__std))
-            #print("skewness : " + str(__skewness))
-            #print("correlation : " + str(__correlation))
+            print("mean : " + str(__mean))
+            print("std : " + str(__std))
+            print("skewness : " + str(__skewness))
+            print("correlation : " + str(__correlation))
 
             __show__result = 1
 

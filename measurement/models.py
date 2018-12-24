@@ -163,12 +163,12 @@ class SectionDocRequest(models.Model):
     maxgrades = models.IntegerField(null=False, blank=False, verbose_name='Full Grade', default=100)
     student_grades = models.CharField(max_length=2048, null=False, blank=False, verbose_name='Grades')
 
-    doc_mean = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_std_deviation = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_skewness = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_correlation = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_max = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_min = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
+    doc_mean = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_std_deviation = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_skewness = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_correlation = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_max = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_min = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
 
     histogram = models.FileField(upload_to='data/media/', max_length=1024, null=False, blank=False)
 
@@ -195,17 +195,17 @@ class CourseDocRequest(models.Model):
 
     course = models.ForeignKey(Course, verbose_name="Course", on_delete=models.CASCADE)
 
-    doc_mean = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_std_deviation = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_skewness = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_correlation = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_max = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    doc_min = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
+    doc_mean = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_std_deviation = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_skewness = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_correlation = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_max = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    doc_min = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
 
     histogram = models.FileField(upload_to='data/media/', max_length=1024, null=False, blank=False)
     doc_ttest_annova_type = models.CharField(max_length=100, unique=True, verbose_name="Correlation Type")
-    doc_ttest_annova_value = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="Course Correlation Value")
-    doc_ttest_annova_sig = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, verbose_name="Course Correlation Significance")
+    doc_ttest_annova_value = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Course Correlation Value")
+    doc_ttest_annova_sig = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, verbose_name="Course Correlation Significance")
 
     doc_explanation = models.TextField(null=False, blank=False,
                                        verbose_name='‫‪Explanation‬‬ ‫‪and‬‬ ‫‪the‬‬ ‫‪recommendations‬‬')
