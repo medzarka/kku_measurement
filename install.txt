@@ -1,5 +1,7 @@
-sudo apt update
-sudo apt upgrade
+#!/bin/bash
+
+sudo apt update -y
+sudo apt upgrade -y
 sudo apt install python3-pip
 sudo pip3 install django==2.1.4
 sudo pip3 install djangorestframework
@@ -16,3 +18,5 @@ sudo pip3 install docx
 sudo pip3 install seaborn
 sudo pip3 install googletrans
 sudo pip3 install google.cloud.translate
+sudo pip3 install python-docx
+sudo pip3 install django-smuggler

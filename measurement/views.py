@@ -11,6 +11,7 @@ from scipy.stats import pearsonr
 from scipy.stats import skew
 from .models import SectionDocRequest
 from .models import CourseDocRequest
+from periods.models import Semester
 from django.utils.datastructures import MultiValueDictKeyError
 import time
 from scipy.stats import norm
@@ -64,11 +65,14 @@ def analysis(context):
         __analysis.append('The skewness of negative --> Most of grades are more than the mean.')
 
     _correlation = context['correlation']
-    if _correlation >= 0.05:
-        __analysis.append(
-            'The correlation is greater or equal to 0.05 --> There is no correlation between Mids and Finals.')
-    else:
-        __analysis.append('The correlation is less than 0.05 --> There is a good correlation between Mids and Finals.')
+    try:
+        if _correlation >= 0.05:
+            __analysis.append(
+                'The correlation is greater or equal to 0.05 --> There is no correlation between Mids and Finals.')
+        else:
+            __analysis.append('The correlation is less than 0.05 --> There is a good correlation between Mids and Finals.')
+    except TypeError:
+        pass
 
     try :
         _ttest_annova_sig = context['ttest_annova_sig']
@@ -153,9 +157,9 @@ def section_action(request):
         if request.method == 'POST':
 
             # upload the file
-            _grades_uploaded_file = 'data/upload/' + str(__grades)
-            if not os.path.exists('data/upload/'):
-                os.mkdirs('data/upload/')
+            _grades_uploaded_file = 'data/upload/sections/' + str(__grades)
+            if not os.path.exists('data/upload/sections/'):
+                os.makedirs('data/upload/sections/')
 
             with open(_grades_uploaded_file, 'wb+') as destination:
                 for chunk in __grades.chunks():
@@ -177,18 +181,20 @@ def section_action(request):
             if __location == '':
                 raise Exception('Unable to read the location from the excel file !!!')
 
-            __newfilename = 'data/upload/section_' + str(__section) + _grades_uploaded_file[-4:]
+            __newfilename = 'data/upload/sections/section_' + str(__section) + _grades_uploaded_file[-4:]
             os.rename(_grades_uploaded_file, __newfilename)
 
             __section_obj = None
+            __actualSemester = Semester.objects.get(semester_isInUse=True)
             for _mytest in Section.objects.all():
-                if _mytest.section_course.course_department.department_location.college_location.location_name_ar == __location \
-                        and _mytest.section_code == __section:
+                if _mytest.section_department.department_location.college_location.location_name_ar == __location \
+                        and _mytest.section_code == __section \
+                        and _mytest.section_semester == __actualSemester:
                     __section_obj = _mytest
                     print('Section found with id = ' + str(_mytest.section_id))
-                    __location = _mytest.section_course.course_department.department_location.college_location.location_name
-                    __college = _mytest.section_course.course_department.department_location.college_name
-                    __department = _mytest.section_course.course_department.department_name
+                    __location = _mytest.section_department.department_location.college_location.location_name
+                    __college = _mytest.section_department.department_location.college_name
+                    __department = _mytest.section_department.department_name
                     __course = _mytest.section_course.course_name
                     __course_code = _mytest.section_course.course_code
                     for _teach in _mytest.section_teachers.all():
@@ -315,6 +321,9 @@ def section_action(request):
         __message = 'Please use the grade file provided by the registration portal (Academia) without any change.'
         print(str(e))
 
+    except Exception as e:
+        __message = str(e)
+        print(str(e))
     finally:
         sem.release()
         print("The semaphore was released")

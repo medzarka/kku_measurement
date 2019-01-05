@@ -28,12 +28,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '10.206.90.207','139.99.197.93']
 
+ADMIN_SITE_HEADER = "KKU Portal"
 
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
+    'periods',
+    'departments',
+    'HR',
+    'courses',
     'measurement',
+    'importManager',
+    'smuggler',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,10 +89,22 @@ WSGI_APPLICATION = 'kku.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'Rkts009ccpostgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

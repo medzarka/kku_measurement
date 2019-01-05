@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/kku_measurement.iml" filepath="$PROJECT_DIR$/.idea/kku_measurement.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../kku_Portal/.idea/kku_Portal.iml" filepath="$PROJECT_DIR$/../kku_Portal/.idea/kku_Portal.iml" />
     </modules>
   </component>
 </project>
